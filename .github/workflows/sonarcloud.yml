@@ -47,7 +47,7 @@ jobs:
 
       # Build Spring Boot Backend
       - name: Build backend with Maven
-        working-directory: ./backend  # Adjust path if needed
+        working-directory: ./bookbart  # Adjust path if needed
         run: mvn clean verify  # Runs tests and generates JaCoCo coverage
 
       # Build React Frontend
