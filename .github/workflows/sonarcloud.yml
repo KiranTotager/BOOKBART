@@ -52,11 +52,11 @@ jobs:
 
       # Build React Frontend
       - name: Install frontend dependencies
-        working-directory: ./frontend  # Adjust path if needed
+        working-directory: ./book-bart-frontend  # Adjust path if needed
         run: npm install
 
       - name: Run frontend tests with coverage
-        working-directory: ./frontend
+        working-directory: ./book-bart-frontend
         run: npm test -- --coverage  # Generates lcov.info
 
       # SonarCloud Analysis
