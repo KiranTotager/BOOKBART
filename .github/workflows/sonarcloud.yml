@@ -1,0 +1,79 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  sonarcloud_scan:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for SonarCloud to analyze Git history
+
+      # Set up Java (Spring Boot)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Set up Node.js (React)
+      - name: Set up Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.17.1'  # Matches your local Node version
+
+      # Cache dependencies
+      - name: Cache SonarCloud & project dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.sonar/cache
+            ~/.m2
+            frontend/node_modules  # Adjust if your React app is in a different folder
+          key: ${{ runner.os }}-sonar-${{ hashFiles('**/pom.xml', '**/package-lock.json') }}
+
+      # Build Spring Boot Backend
+      - name: Build backend with Maven
+        working-directory: ./backend  # Adjust path if needed
+        run: mvn clean verify  # Runs tests and generates JaCoCo coverage
+
+      # Build React Frontend
+      - name: Install frontend dependencies
+        working-directory: ./frontend  # Adjust path if needed
+        run: npm install
+
+      - name: Run frontend tests with coverage
+        working-directory: ./frontend
+        run: npm test -- --coverage  # Generates lcov.info
+
+      # SonarCloud Analysis
+      - name: Run SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=KiranTotager_BOOKBART
+            -Dsonar.organization=kirantotager
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.sources=backend/src/main/java,frontend/src
+            -Dsonar.tests=backend/src/test/java
+            -Dsonar.java.binaries=backend/target/classes
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
+            -Dsonar.java.coveragePlugin=jacoco
+            -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml
+            -Dsonar.sourceEncoding=UTF-8
+          projectBaseDir: .
