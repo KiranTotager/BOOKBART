@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0  # Required for SonarCloud to analyze Git history
 
       # Set up Java (Spring Boot)
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
