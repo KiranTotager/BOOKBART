@@ -18,7 +18,7 @@ import java.util.List;
 public class UserDetail implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Id;
+    long id;
     @Column(name = "name",nullable = false)
     String name;
 
@@ -29,6 +29,8 @@ public class UserDetail implements UserDetails {
     String email;
     @Column(name = "phoneNumber",nullable = false)
     String phoneNumber;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "userDetail")
+    List<BookDetails> bookDetails;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
