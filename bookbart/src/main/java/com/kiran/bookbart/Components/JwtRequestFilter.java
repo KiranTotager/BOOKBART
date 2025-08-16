@@ -3,6 +3,7 @@ package com.kiran.bookbart.Components;
 import com.kiran.bookbart.services.UserDetailServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
@@ -36,10 +37,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     final String authorizationHeader=request.getHeader("Authorization");
     String userName=null;
     String jwtToken=null;
-    if(authorizationHeader!=null & authorizationHeader.startsWith("Bearer")){
+    if(authorizationHeader!=null && authorizationHeader.startsWith("Bearer")){
         jwtToken=authorizationHeader.substring(7);
         userName=jwtUtil.extractUserName(jwtToken);
     }
+    if(jwtToken==null && request.getCookies()!=null){
+        for(Cookie cookie:request.getCookies()){
+            if("authToken".matches(cookie.getName())){
+                jwtToken=cookie.getValue();
+                log.info("token is extracted from the http only cookies");
+                break;
+            }
+        }
+    }
+    userName=jwtUtil.extractUserName(jwtToken);
     if(userName!=null && SecurityContextHolder.getContext().getAuthentication()==null){
         UserDetails userDetail=userDetailService.loadUserByUsername(userName);
         if(jwtUtil.validateToken(jwtToken,userName)){

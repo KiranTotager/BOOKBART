@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "BooksDetail")
@@ -27,11 +29,16 @@ public class BookDetails {
     BigDecimal price;
     @Column(name = "bookCategory" ,nullable = false)
     String category;
+    @Column(name = "description",columnDefinition = "text")
+    String description;
+    @Column(name = "uploadedDate")
+    LocalDate uploadedDate;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "locationId",referencedColumnName = "id")
     BookLocation bookLocation;
-
-    @ManyToOne
+    @Column(name = "path")
+    String path;
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
     UserDetail userDetail;
 }

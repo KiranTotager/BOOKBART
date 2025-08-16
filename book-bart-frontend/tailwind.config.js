@@ -12,7 +12,8 @@ export default {
         optionsBackground:"#88BDF2",
         bookCardBackground:"#BDDDFC",
         loginBackground:"#EBF4F9",
-        loginRegistrationText:"#296199ff"
+        loginRegistrationText:"#296199ff",
+        backNavBackground:"#BDDDFC",
       }
     },
   },

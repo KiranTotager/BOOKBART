@@ -16,7 +16,7 @@ export default function Header() {
                     {/* <button className="bg-secondary text-primary p-1 rounded-lg font-bold" >donate-books</button> */}
                     {/* <button value="sell-books" className="bg-secondary text-red-primary p-1 rounded-lg font-bold" >sell-books</button> */}
                     <NavButton value={"donate-books"}/>
-                    <NavButton value={"sell-books"}/>
+                    <NavButton value={"sell-books"} navigate={'/sell'}/>
                     <NavButton value={"login"} navigate={'/login'}/>
                     {/* <FaUserCircle className="text-secondary h-8 w-8 innline-block cursor-pointer" /> */}
                 </div>

@@ -43,7 +43,7 @@ public class WebSecurity {
                 .authorizeHttpRequests(requests->requests
                         .requestMatchers(HttpMethod.POST,"/authenticate/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/books/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/upload").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/upload/**").authenticated()
 
                 ).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling->
