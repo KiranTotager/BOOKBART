@@ -5,11 +5,14 @@ import BookCard from './components/BookCard'
 import Home from './pages/Home'
 import { BrowserRouter,Routes,Route } from 'react-router-dom'
 import BartBook from './components/BartBook'
+import { Provider } from 'react-redux'
+import store from './ReduxToolKit/storeConfiguration'
 function App() {
 
 
   return (
-    <BrowserRouter>
+   <Provider store={store}>
+     <BrowserRouter>
     <Routes>
       <Route path='/' element={<Home/>}/>
       <Route path='/login' element={<Login/>}/>
@@ -17,6 +20,7 @@ function App() {
       <Route path='/sell' element={<BartBook/>}/>
     </Routes>
     </BrowserRouter>
+   </Provider>
 
   )
 }
