@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { FaRupeeSign } from "react-icons/fa";
+import { FaRupeeSign ,FaCameraRetro} from "react-icons/fa";
 import BackNav from "./BackNav";
 import LocationDropDown from "./LocationDropDown";
 import { useDispatch, useSelector } from "react-redux";
-import { setBookName, setAvailabilityMode, setState, setDistrict, setCity, setPincode } from "../ReduxToolKit/booksDetailSlice";
+import { setBookName,setPrice, setAvailabilityMode, setState, setDistrict, setCity, setPincode } from "../ReduxToolKit/booksDetailSlice";
 export default function BartBook() {
     let [isfoucesed, setFoucesd] = useState({
         bookName: 0,
@@ -14,12 +14,15 @@ export default function BartBook() {
     })
     let dispatch = useDispatch();
     let bookName = useSelector((state) => state.bookDetail.bookName);
+    let availability=useSelector((state)=>state.bookDetail.availaibilityMode);
+    let category=useSelector((state)=>state.bookDetail.category);
+    let bookPrice=useSelector((state)=>state.bookDetail.price);
     let selectedState = useSelector((state) => state.bookDetail.state);
     let selectedDistrict = useSelector((state) => state.bookDetail.district);
     let selectedCity = useSelector((state) => state.bookDetail.city);
+    let selectedPincode=useSelector((state)=>state.bookDetail.pincode);
 
-
-
+    let postButtonHandle=(bookName=="" || availability=="" || category=="" || bookPrice =="" || selectedState=="" || selectedDistrict =="" || selectedCity=="" || selectedPincode=="");
     // let handleAvailabilityFocus=(e)=>{
     //     let {name,value}=e.target;
     //     if(value=="-")
@@ -32,7 +35,7 @@ export default function BartBook() {
             <div className="flex flex-col items-center m-10 ">
                 <h1 className="font-bold text-3xl">POST YOUR BOOK</h1>
 
-                <div className="border-2 border-gray-400 rounded-lg w-1/2 mt-5">
+                <div className="border-2 flex justify-center flex-col p-2 border-gray-400 rounded-lg w-1/2 mt-5">
                     <div className="">
                         <div className="flex flex-col gap-4 w-96 m-5">
                             <h1 className="uppercase font-bold text-xl">Include Some Details</h1>
@@ -92,47 +95,55 @@ export default function BartBook() {
                         <hr className="border-t-2 border-gray-400" />
                         <div className="flex flex-col gap-5 m-5 w-96">
                             <h1 className="font-bold text-xl">Set a Price</h1>
-                            <p className="flex items-center border-2 border-gray-500 rounded p-1"><span className="text-gray-400"><FaRupeeSign size={12} /></span><input type="text" className="focus:outline-none border-l-2 border-gray-300 p-2 ml-1" onClick={(e)=>setFoucesd({...isfoucesed,[e.target.name]:1})} onBlur={
+                            <p className={isfoucesed.price==0?"flex items-center border-2 border-gray-500 rounded p-1":isfoucesed.price==1?"flex items-center border-[3px] border-blue-900 rounded p-1":"flex items-center border-[3px] border-red-500 rounded p-1"}><span className="text-gray-400"><FaRupeeSign size={12} /></span><input type="text"  name="price" id="price" value={bookPrice} className="focus:outline-none border-l-2 border-gray-300 p-2 ml-1" onClick={(e)=>setFoucesd({...isfoucesed,[e.target.name]:1})} onBlur={
                                 (e)=>{
                                     let {name,value}=e.target;
-                                    if(!Number.isNaN(value)){
-                                        dispatch(setPrice(""));
+                                    // alert("here it is blur function"+value);
+                                    if(value===""){
                                         setFoucesd({...isfoucesed,[name]:2});
+                                    }
+                                    else if(!isNaN(Number(value))){
+                                        dispatch(setPrice(value));
+                                        alert("in nan condition"+value);
+                                        setFoucesd({...isfoucesed,[name]:0});
                                     }else{
+                                        alert("here it is in nan else condition");
                                         setFoucesd({...isfoucesed,[name]:0});
                                     }
                                 }
-                            } onChange={(e)=>{if(!Number.isNaN(e.target.value)){dispatch(setPrice(e.target.value))} }}/></p>
+                            } onChange={(e)=>{if(!isNaN(Number(e.target.value))){dispatch(setPrice(e.target.value))} }}/></p>
+                        </div>
+                        <hr className="border-t-2 border-gray-400" />
+                        <div className="m-5">
+                            <h1 className="text-lg font-bold uppercase">Upload Photo's</h1>
+                            <div className="m-3">
+                                <p className="h-24 w-24 border-2 border-gray-500 rounded-sm flex flex-col gap-2 justify-center items-center p-2 cursor-pointer"><FaCameraRetro size={28}/><span>Add Photo</span></p>
+                            </div>
                         </div>
                         <hr className="border-t-2 border-gray-400" />
                         <div className="flex flex-col gap-4 m-5">
                             <h1 className="uppercase font-bold text-xl">confirm your location</h1>
-                            <p className="flex gap-2">
-                                <label htmlFor="state" className="text-lg">state <sup className="text-red-500 font-bold">*</sup>:</label>
-                                <LocationDropDown name="state" id="state" action={setState} />
-                            </p>
+                            
+                                <LocationDropDown name="state" id="state" action={setState} label="state"/>
+                            
                             {selectedState != "" &&
-                                <p className="flex gap-2">
-                                    <label htmlFor="district">District <sup className="text-red-500 font-bold">*</sup>:</label>
-                                    <LocationDropDown name="district" id="district" action={setDistrict} />
-                                </p>
+                                    <LocationDropDown name="district" id="district" label="district" action={setDistrict} />
                             }
                             {
                                 selectedState != "" && selectedDistrict != "" &&
-                                <p className="flex gap-2">
-                                    <label htmlFor="city">city <sup className="text-red-500 font-bold">*</sup>:</label>
-                                    <LocationDropDown name="city" id="city" action={setCity} />
-                                </p>
+                                
+                                    <LocationDropDown name="city" id="city" label="city" action={setCity} />
+                        
                             }
                             {
                                 selectedState != "" && selectedDistrict != "" && selectedCity != "" &&
-                                <p className="flex gap-2">
-                                    <label htmlFor="pincode">pincode <sup className="text-red-500 font-bold">*</sup>:</label>
-                                    <LocationDropDown name="pincode" id="pincode" action={setPincode} />
-                                </p>
+                                
+                                    <LocationDropDown name="pincode" id="pincode" label="pincode" action={setPincode} />
+                                
                             }
                         </div>
                     </div>
+                    <button className="mx-auto bg-blue-500 p-1 w-20 rounded-lg text-white" disabled={postButtonHandle} >post</button>
                 </div>
             </div>
         </div>
